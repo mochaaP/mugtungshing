@@ -44,7 +44,7 @@ export class NewRelic {
   }
 
   capture (): void {
-    return this.waitUntil(this.rq.post('/log/v1', {
+    return this.waitUntil(this.rq.post('log/v1', {
       json: [{
         common: this.common,
         logs: this.logs
