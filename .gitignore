@@ -1,3 +1,6 @@
+worker
+transpiled
+
 # Logs
 logs
 *.log

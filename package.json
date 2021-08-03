@@ -1,21 +1,39 @@
 {
-  "name": "cfworker-telegraf-template",
-  "version": "1.0.0",
-  "description": "A template for Telegram Bot using Telegraf Framework on Cloudflare Workers",
-  "main": "index.js",
+  "name": "mugtungshing",
+  "version": "0.1.0",
+  "description": "@mugtungshing_bot running on Cloudflare Workers",
+  "main": "src/index.js",
   "repository": "https://github.com/Tsuk1ko/cfworker-telegraf-template",
-  "author": "神代綺凜 <i@loli.best>",
+  "author": "mochaaP <npm@mochaa.ws>",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "scripts": {
-    "build": "webpack ."
+    "build": "webpack",
+    "dev": "wrangler dev",
+    "lint": "ts-standard ."
   },
   "dependencies": {
+    "@cfworker/sentry": "^1.8.3",
     "@cfworker/web": "^1.5.0",
+    "@cloudflare/wrangler": "^1.18.0",
+    "@mugtungshing/core": "^0.3.2",
+    "@sentry/cli": "^1.68.0",
     "cfworker-middware-telegraf": "^1.0.0",
-    "telegraf": "^3.38.0"
+    "dayjs": "^1.10.6",
+    "ky": "^0.28.5",
+    "ky-universal": "^0.9.1",
+    "markdown-it": "^12.1.0",
+    "telegraf": "^3.38.0",
+    "toucan-js": "^2.5.0-beta.1"
   },
   "devDependencies": {
+    "@sentry/webpack-plugin": "^1.16.0",
+    "@types/markdown-it": "^12.0.3",
+    "@types/webpack": "^5.28.0",
+    "ts-loader": "8.2.0",
+    "ts-standard": "^10.0.0",
+    "types-cloudflare-worker": "^1.2.0",
+    "typescript": "^4.3.5",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   }
