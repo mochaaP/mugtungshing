@@ -67,8 +67,8 @@ bot.on('inline_query', async (ctx) => {
   }
 
   const tungshingResult = getTungshing(
-    `${ctx.update.message.from.id}$${BOT_TOKEN}`,
-    getNickname(ctx.update.message.from)
+    `${ctx.update.inline_query.from.id}$${BOT_TOKEN}`,
+    getNickname(ctx.update.inline_query.from)
   )
 
   return await ctx.answerInlineQuery(
@@ -82,13 +82,18 @@ bot.on('inline_query', async (ctx) => {
               str2ab(tungshingResult)
             )
           )
-        ),
+        )
+        .slice(0, 7),
       title: `📅 ${getNickname(ctx.update.inline_query.from)} 的今日黄历`,
       description: `查询${new Date().toLocaleDateString('zh-CN', { dateStyle: 'full', timeZone: 'Asia/Shanghai' })}的音游黄历`,
       input_message_content: {
         message_text: tungshingResult,
         parse_mode: 'HTML'
-      }
+      },
+      thumb_url: 'https://avatars.githubusercontent.com/u/88090726',
+      reply_markup: Markup.inlineKeyboard([
+        Markup.switchToCurrentChatButton('给我也整一个！', '')
+      ])
     }],
     {
       cache_time: 30,

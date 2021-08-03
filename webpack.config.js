@@ -5,6 +5,7 @@ const pkg = require('./package.json')
 const mode = process.env.ENVIRONMENT || 'production'
 
 module.exports = {
+  entry: './src/index.ts',
   target: 'webworker',
   output: {
     filename: 'worker.js',

@@ -1,5 +1,6 @@
 import { Context, Middleware } from '@cfworker/web'
 import { jsonFetch as fetch } from '@worker-tools/json-fetch'
+import { nanoid } from 'nanoid'
 export class NewRelic {
   readonly common: {
     timestamp?: number
@@ -26,7 +27,7 @@ export class NewRelic {
     this.common = { timestamp, attributes }
     this.license = license
     this.endpoint = endpoint
-    this.waitUntil = context.waitUntil
+    this.waitUntil = (promise) => context.waitUntil(promise)
   }
 
   add (message?: string, attributes?: {[key: string]: any}, timestamp = Math.floor(Date.now() / 1000)): void {
@@ -57,7 +58,12 @@ export const newRelicLogging: Middleware = async (context, next) => {
   relic = new NewRelic(
     NEWRELIC_LICENSE_KEY,
     context,
-    { service: 'telegram-bot', environment: ENVIRONMENT },
+    {
+      service: 'telegram-bot',
+      environment: ENVIRONMENT,
+      hostname: 'cloudflare-workers',
+      eventId: nanoid()
+    },
     new URL('https://log-api.eu.newrelic.com/')
   )
   relic.add('start processing request', { context })
