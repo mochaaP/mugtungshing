@@ -18,10 +18,9 @@
     "@cloudflare/wrangler": "^1.18.0",
     "@mugtungshing/core": "^0.3.2",
     "@sentry/cli": "^1.68.0",
+    "@worker-tools/json-fetch": "^2.0.6",
     "cfworker-middware-telegraf": "^1.0.0",
     "dayjs": "^1.10.6",
-    "ky": "^0.28.5",
-    "ky-universal": "^0.9.1",
     "markdown-it": "^12.1.0",
     "telegraf": "^3.38.0",
     "toucan-js": "^2.5.0-beta.1"
