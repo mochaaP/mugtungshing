@@ -51,4 +51,9 @@ export class Lunar implements ILunar {
       day: lunarDay[this.day]
     }
   }
+
+  toString (): string {
+    const text = this.toText()
+    return `${text.year}年${text.month}月${text.day}日`
+  }
 }
