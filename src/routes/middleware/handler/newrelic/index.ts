@@ -29,7 +29,7 @@ export class NewRelic {
     this.common = { timestamp, attributes }
     this.license = license
     this.endpoint = endpoint
-    this.waitUntil = (promise) => event.waitUntil(promise)
+    this.waitUntil = promise => event.waitUntil(promise)
   }
 
   add (message?: string, attributes?: {[key: string]: any}, timestamp = Math.floor(Date.now() / 1000)): void {
@@ -41,7 +41,7 @@ export class NewRelic {
   }
 
   capture (): void {
-    return this.waitUntil(fetch(new URL('log/v1', this.endpoint).toString(), {
+    return this.waitUntil(fetch(new URL('log/v1', this.endpoint), {
       method: 'POST',
       body: [{
         common: this.common,
@@ -71,6 +71,6 @@ export default (): Middleware => {
 
     newrelic.add('Start processing request', { request: event.request })
 
-    return newrelic.capture
+    return () => newrelic.capture()
   }
 }
