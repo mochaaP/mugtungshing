@@ -38,7 +38,7 @@ export default (bot: Telegraf): BotCommand[] => {
         )
       } else {
         return await context.reply(
-          await getTungshingByUser(context.message.from, timezone, dayjs(parsed[1]).toDate()),
+          await getTungshingByUser(context.message.reply_to_message?.from ?? context.message.from, timezone, dayjs(parsed[1]).toDate()),
           {
             parse_mode: 'HTML',
             reply_to_message_id: context.message.message_id,
@@ -50,7 +50,7 @@ export default (bot: Telegraf): BotCommand[] => {
       }
     } else {
       return await context.reply(
-        await getTungshingByUser(context.message.from, timezone),
+        await getTungshingByUser(context.message.reply_to_message?.from ?? context.message.from, timezone),
         {
           parse_mode: 'HTML',
           reply_to_message_id: context.message.message_id,
