@@ -20,7 +20,7 @@ export default function (prefix: string): Middleware {
       .post(path(`/webhook/${BOT_PATH}`), async (context: EventContext) => { // handle webhook events
         const bot = await createBot(BOT_TOKEN)
 
-        handle(bot)
+        await handle(bot)
 
         const response = new ResponseOptions()
 
@@ -30,6 +30,8 @@ export default function (prefix: string): Middleware {
       })
       .get(path('/set-webhook'), async (context: EventContext) => { // set webhook url
         const bot = await createBot(BOT_TOKEN)
+
+        await handle(bot) // set commands while setting webhook
 
         const url = new URL(context.event.request.url)
 

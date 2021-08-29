@@ -7,11 +7,12 @@
   "license": "Apache-2.0",
   "private": true,
   "dependencies": {
-    "@mugtungshing/core": "^0.4.1",
+    "@mugtungshing/core": "^0.7.0",
     "@worker-tools/json-fetch": "^2.0.6",
     "abortcontroller-polyfill": "^1.7.3",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
+    "dayjs": "^1.10.6",
     "html-escaper": "^3.0.3",
     "https-browserify": "^1.0.0",
     "nanoid": "^3.1.25",

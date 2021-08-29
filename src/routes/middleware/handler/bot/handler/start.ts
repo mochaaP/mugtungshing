@@ -1,6 +1,7 @@
 import { Telegraf, Markup } from 'telegraf'
+import { BotCommand } from 'typegram'
 
-export default (bot: Telegraf): void => {
+export default (bot: Telegraf): BotCommand[] => {
   bot.start(async (context) => {
     return await context.reply(`
 <strong>(｡･∀･)ﾉﾞ 嗨！我是黄历姬，为你生成今日音游运势。</strong>
@@ -16,4 +17,9 @@ export default (bot: Telegraf): void => {
       ])
     })
   })
+
+  return [{
+    command: 'start',
+    description: '- 音游狗老黄历 Bot 使用说明。'
+  }]
 }
