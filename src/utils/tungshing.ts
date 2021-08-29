@@ -1,6 +1,6 @@
 import { Tungshing } from '@mugtungshing/core'
 import { User } from 'typegram'
-import { Lunar, pangu, hash } from '.'
+import { Lunar, pangu, hash, htmlEscape } from '.'
 
 export async function getTungshing (user: User, tz = 'Asia/Shanghai', date = new Date()): Promise<string> {
   const lunar = new Lunar(date, tz).toString()
@@ -15,7 +15,7 @@ ${getSeasonEmoji(date, tz)} 农历${lunar}
 · <strong>宜</strong> ${result.activity[0].action}：${result.activity[0].reason}
 · <strong>忌</strong> ${result.activity[1].action}：${result.activity[1].reason}
 
-<strong>黄历姬为 ${getNickname(user)} 推荐：</strong>
+<strong>黄历姬为 <a href="tg://user?id=${user.id}">${getNickname(user)}</a> 推荐：</strong>
 · 今日音游：${result.daily}
 · 打移动端音游最佳朝向：${result.direction}
 · 街机音游黄金位：${result.slot}
@@ -42,5 +42,5 @@ export function getNickname (from: User): string {
     name += ` ${from.last_name}`
   }
 
-  return name
+  return htmlEscape(name)
 }

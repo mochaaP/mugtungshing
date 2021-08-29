@@ -1,6 +1,6 @@
 import { Router } from 'tiny-request-router'
-import { prefixPath, getStubServerResponse, ResponseOptions } from '../../utils'
-import { EventContext, Route } from '..'
+import { prefixPath, getStubServerResponse, ResponseOptions } from '../../../../utils'
+import { Callback, EventContext, Middleware } from '../../..'
 
 import { Telegraf, Context } from 'telegraf'
 
@@ -12,10 +12,10 @@ async function createBot (token: string, options?: Partial<Telegraf.Options<Cont
   return bot
 }
 
-export default function (prefix: string): Route {
+export default function (prefix: string): Middleware {
   const path = prefixPath(prefix)
 
-  return function (router: Router): void {
+  return function apply (router: Router): Callback {
     router
       .post(path(`/webhook/${BOT_PATH}`), async (context: EventContext) => { // handle webhook events
         const bot = await createBot(BOT_TOKEN)
@@ -54,5 +54,7 @@ export default function (prefix: string): Route {
             })
         }
       })
+
+    return () => {} // placeholder callback
   }
 }

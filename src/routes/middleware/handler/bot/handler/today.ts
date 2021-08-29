@@ -1,5 +1,5 @@
 import { Telegraf, Markup } from 'telegraf'
-import { getTungshing, getNickname, pangu, hash } from '../../../utils'
+import { getTungshing, getNickname, pangu, hash } from '../../../../../utils'
 
 const timezone = 'Asia/Shanghai'
 
