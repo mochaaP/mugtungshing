@@ -10,7 +10,7 @@ export default (bot: Telegraf): void => {
 - 内联：在聊天框里输入 <code>@${(await context.telegram.getMe()).username ?? 'mugtungshing_bot'} </code>
     `, {
       parse_mode: 'HTML',
-      reply_to_message_id: context.update.message.message_id,
+      reply_to_message_id: context.message.message_id,
       ...Markup.inlineKeyboard([
         Markup.button.switchToCurrentChat('生成我的今日音游黄历！', '')
       ])

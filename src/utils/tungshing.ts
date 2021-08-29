@@ -1,24 +1,17 @@
 import { Tungshing } from '@mugtungshing/core'
 import { User } from 'typegram'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-import { Lunar, pangu } from '.'
+import { Lunar, pangu, hash } from '.'
 
-dayjs.extend(utc)
-dayjs.extend(timezone)
-
-export function getTungshing (user: User, tz = 'Asia/Shanghai'): string {
-  const date = new Date()
+export async function getTungshing (user: User, tz = 'Asia/Shanghai', date = new Date()): Promise<string> {
   const lunar = new Lunar(date, tz).toString()
 
-  const result = new Tungshing(`${user.id}`, date)
+  const result = new Tungshing(await hash(`${user.id}$${BOT_TOKEN}`), date)
   return `
-📅 今天是${pangu.spacing(date.toLocaleDateString('zh-CN', { dateStyle: 'full', timeZone: tz }))}
-${getSeasonEmoji(tz, date)} 农历${lunar}
+📅 今天是 ${pangu.spacing(date.toLocaleDateString('zh-CN', { dateStyle: 'full', timeZone: tz }))}
+${getSeasonEmoji(date, tz)} 农历${lunar}
 
 
-<strong>黄历姬掐指一算，<a href="tg://user?id=${user.id}]">${getNickname(user)}</a> 今天：</strong>
+<strong>黄历姬掐指一算，<a href="tg://user?id=${user.id}">${getNickname(user)}</a> 今天：</strong>
 · <strong>宜</strong> ${result.activity[0].action}：${result.activity[0].reason}
 · <strong>忌</strong> ${result.activity[1].action}：${result.activity[1].reason}
 
@@ -29,17 +22,17 @@ ${getSeasonEmoji(tz, date)} 农历${lunar}
   `
 }
 
-function getSeasonEmoji (tz: string, date: Date = new Date()): string {
+function getSeasonEmoji (date = new Date(), tz = 'Asia/Shanghai'): string {
   const spring = '🌸'
   const summer = '🏝️'
   const autumn = '🍁'
   const winter = '⛄'
-  switch (Math.floor(dayjs(date).tz(tz).get('month') / 4)) {
+  switch (Math.floor((parseInt(date.toLocaleDateString('en-US').split('/')[0]) - 3) / 3)) {
     case 0: return spring
     case 1: return summer
     case 2: return autumn
     case 3: return winter
-    default: return spring
+    default: return winter
   }
 }
 

@@ -1,8 +1,5 @@
-type = "webpack"
-zone_id = ""
-account_id = ""
+type = "javascript"
 workers_dev = true
-webpack_config = "webpack.config.js"
 name = "mugtungshing-development"
 [vars]
   ENVIRONMENT = "development"
@@ -17,3 +14,8 @@ name = "mugtungshing-development"
   name = "mugtungshing"
   [env.production.vars]
     ENVIRONMENT = "production"
+
+[build]
+  command = "yarn build"
+    [build.upload]
+    format = "service-worker"

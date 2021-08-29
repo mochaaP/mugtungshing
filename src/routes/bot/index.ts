@@ -1,9 +1,10 @@
 import { Router } from 'tiny-request-router'
-import { prefixPath } from '../../utils'
+import { prefixPath, getStubServerResponse, ResponseOptions } from '../../utils'
 import { EventContext, Route } from '..'
 
 import { Telegraf, Context } from 'telegraf'
-import { ServerResponse } from 'http'
+
+import handle from './handler'
 
 async function createBot (token: string, options?: Partial<Telegraf.Options<Context>>): Promise<Telegraf> {
   const bot = new Telegraf(token, options)
@@ -19,33 +20,13 @@ export default function (prefix: string): Route {
       .post(path(`/webhook/${BOT_PATH}`), async (context: EventContext) => { // handle webhook events
         const bot = await createBot(BOT_TOKEN)
 
-        function responseBuilder (response: any): ServerResponse {
-          return new Proxy(
-            Object.assign(response, {
-              set: (...args: any) => response.headers.set(...args),
-              header: response.headers
-            }),
-            {
-              set (object, propertyKey, value) {
-                if ( // body is an object
-                  propertyKey === 'body' &&
-                  ['Object', 'Array'].includes(Object.getPrototypeOf(value).constructor.name)
-                ) { // stringify that
-                  object.body = JSON.stringify(value)
-                  object.headers.set('content-type', 'application/json')
-                  return true // and breaks
-                } // else pass through
-                return Reflect.set(object, propertyKey, value)
-              }
-            }
-          )
-        }
+        handle(bot)
 
-        const response = { body: '', headers: {} }
+        const response = new ResponseOptions()
 
-        await bot.handleUpdate(await context.event.request.json(), responseBuilder(response))
+        context.event.waitUntil(bot.handleUpdate(await context.event.request.json(), getStubServerResponse(response)))
 
-        return new Response(response.body, { headers: response.headers })
+        return new Response(response[0], response[1])
       })
       .get(path('/set-webhook'), async (context: EventContext) => { // set webhook url
         const bot = await createBot(BOT_TOKEN)

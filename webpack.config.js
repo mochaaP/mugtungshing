@@ -2,13 +2,13 @@ const path = require('path')
 const webpack = require('webpack')
 const { ESBuildMinifyPlugin } = require('esbuild-loader')
 
-const mode = process.env.ENVIRONMENT.toLowerCase() || process.env.NODE_ENV.toLowerCase() || 'production'
+const mode = process.env.ENVIRONMENT?.toLowerCase() || process.env.NODE_ENV?.toLowerCase() || 'production'
 
 module.exports = {
   entry: './src/index.ts',
   target: 'webworker',
   output: {
-    filename: 'worker.js',
+    filename: 'index.js',
     path: path.join(__dirname, 'dist')
   },
   mode,
@@ -16,11 +16,17 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.ts?$/,
         loader: 'esbuild-loader',
         options: {
           loader: 'ts',
           target: 'es2019'
+        }
+      },
+      {
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false
         }
       }
     ]
@@ -30,13 +36,14 @@ module.exports = {
       stream: require.resolve('stream-browserify'),
       http: require.resolve('stream-http'),
       https: require.resolve('https-browserify'),
-      url: require.resolve('url/'),
+      url: require.resolve('./polyfill/url'),
       path: require.resolve('path-browserify'),
       util: require.resolve('util/'),
       crypto: require.resolve('crypto-browserify'),
       buffer: require.resolve('buffer/'),
       fs: false
-    }
+    },
+    extensions: ['.ts', '.js']
   },
   plugins: [
     new webpack.ProvidePlugin({
@@ -45,10 +52,13 @@ module.exports = {
     })
   ],
   optimization: {
-    minimizer: [
-      mode === 'production' ? new ESBuildMinifyPlugin({
+    minimizer: mode === 'production' ? [
+      new ESBuildMinifyPlugin({
         target: 'es2019'
-      }) : null
-    ]
+      })
+    ] : undefined
+  },
+  performance: {
+    hints: false
   }
 }
