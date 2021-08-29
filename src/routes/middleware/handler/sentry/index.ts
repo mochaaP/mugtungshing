@@ -2,7 +2,7 @@ import { Router } from 'tiny-request-router'
 import Toucan from 'toucan-js'
 import { Callback, ExtraEvent, Middleware } from '../../..'
 
-export default function (): Middleware {
+export default function (handlers: Array<(router: Router, event: ExtraEvent) => Callback>): Middleware {
   return function apply (router: Router, event: ExtraEvent): Callback {
     const sentry = new Toucan({
       dsn: SENTRY_DSN,
@@ -12,6 +12,12 @@ export default function (): Middleware {
     })
     event.extra.sentry = sentry
 
-    return () => {}
+    try {
+      const callbacks = handlers.map(handler => handler(router, event))
+      return response => callbacks.forEach(callback => callback(response))
+    } catch (err) {
+      sentry.captureException(err)
+      return () => {}
+    }
   }
 }

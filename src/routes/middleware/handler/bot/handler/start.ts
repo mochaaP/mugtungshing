@@ -1,8 +1,13 @@
 import { Telegraf, Markup } from 'telegraf'
 import { BotCommand } from 'typegram'
+import { ExtraEvent } from '../../../..'
+import { Logger } from '../../../../../utils'
 
-export default (bot: Telegraf): BotCommand[] => {
+export default (bot: Telegraf, event: ExtraEvent): BotCommand[] => {
+  const { log } = event.extra.logger as Logger
+
   bot.start(async (context) => {
+    log('handling command /start')
     return await context.reply(`
 <strong>(｡･∀･)ﾉﾞ 嗨！我是黄历姬，为你生成今日音游运势。</strong>
 

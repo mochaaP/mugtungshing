@@ -2,7 +2,8 @@ import { Identifier } from '@mugtungshing/core'
 import dayjs from 'dayjs'
 import { Telegraf, Markup } from 'telegraf'
 import { BotCommand, InlineQueryResult, User } from 'typegram'
-import { getTungshingByUser, getNickname, pangu, hash, isToday, getTungshingByIdentifier } from '../../../../../utils'
+import { ExtraEvent } from '../../../..'
+import { getTungshingByUser, getNickname, pangu, hash, isToday, getTungshingByIdentifier, Logger } from '../../../../../utils'
 
 const timezone = 'Asia/Shanghai'
 
@@ -10,10 +11,14 @@ const baguaRegExp = /^[乾兑地坎坤天山巽水泽火离艮雷震风]{8}·[�
 const identifierRegExp = /^[乾兑地坎坤天山巽水泽火离艮雷震风a-f0-9]{8}[·-][乾兑地坎坤天山巽水泽火离艮雷震风a-f0-9]{4}[·-][乾兑地坎坤天山巽水泽火离艮雷震风a-f0-9]{4}[·-][乾兑地坎坤天山巽水泽火离艮雷震风a-f0-9]{4}[·-][乾兑地坎坤天山巽水泽火离艮雷震风a-f0-9]{12}$/
 const dateRegExp = /^(\d{4})(\d{2})(\d{2})$/
 
-export default (bot: Telegraf): BotCommand[] => {
+export default (bot: Telegraf, event: ExtraEvent): BotCommand[] => {
+  const { log } = event.extra.logger as Logger
+
   bot.command('tungshing', async (context) => {
+    log('Handling command /tungshing', undefined, context.message)
     const parsed = context.message.text.split(' ')
     if (parsed[1]?.match(identifierRegExp) != null) {
+      log('identifier found at first argument', undefined, parsed[1])
       return await context.reply(
         await getTungshingByIdentifier(new Identifier(parsed[1]), timezone),
         {
@@ -25,7 +30,9 @@ export default (bot: Telegraf): BotCommand[] => {
         }
       )
     } else if (parsed[1] != null && dayjs(parsed[1]).isValid() && dayjs.tz(parsed[1], timezone).diff(dayjs(), 'day') < 0) {
+      log('date found at first argument', undefined, parsed[1])
       if (parsed[2]?.match(identifierRegExp) != null) {
+        log('identifier found at second argument', undefined, parsed[2])
         return await context.reply(
           await getTungshingByIdentifier(new Identifier(parsed[2]), timezone, dayjs(parsed[1]).toDate()),
           {
@@ -64,6 +71,7 @@ export default (bot: Telegraf): BotCommand[] => {
 
   // 今日黄历
   bot.inlineQuery(/^$/, async (context) => {
+    log('Empty inline query', undefined, context.inlineQuery)
     const date = new Date()
 
     return await context.answerInlineQuery(
@@ -75,6 +83,7 @@ export default (bot: Telegraf): BotCommand[] => {
     )
   })
   bot.inlineQuery(identifierRegExp, async (context) => {
+    log('Found identifier in inline query', undefined, context.inlineQuery)
     const date = new Date()
 
     return await context.answerInlineQuery(
@@ -121,8 +130,10 @@ export default (bot: Telegraf): BotCommand[] => {
 
   // 历史黄历
   bot.inlineQuery(dateRegExp, async (context) => {
+    log('Found date in inline query', undefined, context.inlineQuery)
     const day = dayjs.tz(context.inlineQuery.query, timezone)
     if (!day.isValid()) {
+      log('Date is invalid', undefined, context.inlineQuery)
       const date = new Date()
 
       return await context.answerInlineQuery(
@@ -157,6 +168,7 @@ export default (bot: Telegraf): BotCommand[] => {
     }
     if (day.diff(dayjs(), 'day') > 0) {
       const date = new Date()
+      log('Date is too late', undefined, context.inlineQuery)
       return await context.answerInlineQuery(
         [
           {
@@ -203,6 +215,8 @@ export default (bot: Telegraf): BotCommand[] => {
     if (!day.isValid()) {
       const date = new Date()
 
+      log('Date is invalid', undefined, context.inlineQuery)
+
       return await context.answerInlineQuery(
         [
           {
@@ -235,6 +249,7 @@ export default (bot: Telegraf): BotCommand[] => {
     }
     if (day.diff(dayjs(), 'day') > 0) {
       const date = new Date()
+      log('Date is too late', undefined, context.inlineQuery)
       return await context.answerInlineQuery(
         [
           {
