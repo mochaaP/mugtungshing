@@ -9,7 +9,7 @@ export default [
   sentry([
     newrelic(),
     (router: Router, event: ExtraEvent): Callback => {
-      Object.assign(event, { extra: { logger: new Logger(event) } })
+      event.extra.logger = new Logger(event.extra.sentry, event.extra.newrelic)
       return () => {}
     },
     bot('/bot')

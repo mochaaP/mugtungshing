@@ -24,7 +24,7 @@ export class NewRelic {
     event: ExtraEvent,
     attributes?: {[key: string]: any},
     endpoint = new URL('https://log-api.newrelic.com/'),
-    timestamp = Date.now()
+    timestamp = Math.floor(Date.now() / 1000)
   ) {
     this.common = { timestamp, attributes }
     this.license = license

@@ -1,16 +1,14 @@
 import Toucan from 'toucan-js'
 import { Level } from 'toucan-js/dist/types'
-import { ExtraEvent } from '../routes'
 import { NewRelic } from '../routes/middleware/handler/newrelic'
 
 export class Logger {
   readonly sentry: Toucan
   readonly newrelic: NewRelic
 
-  constructor (event: ExtraEvent) {
-    this.sentry = event.extra.sentry
-    this.newrelic = event.extra.newrelic
-    Object.assign(event, { extra: { logger: this } })
+  constructor (sentry: Toucan, newrelic: NewRelic) {
+    this.sentry = sentry
+    this.newrelic = newrelic
   }
 
   log (message: string, level: Level = 'debug', data?: any): void {
